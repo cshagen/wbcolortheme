@@ -4,7 +4,7 @@ class PowerGraph {
   initialGraphData;
   svg;
   axiscolor;
-  
+
 
   margin = { top: 10, right: 10, bottom: 20, left: 40 };
 
@@ -18,7 +18,7 @@ class PowerGraph {
     this.graphRefreshCounter = 0;
     this.width = 500;
     this.height = 500;
-    }
+  }
 
   init() {
     var style = getComputedStyle(document.body);
@@ -27,7 +27,7 @@ class PowerGraph {
     this.gridColors[1] = style.getPropertyValue('--color-export');
     this.gridColors[2] = style.getPropertyValue('--color-evu');
     this.bgcolor = style.getPropertyValue('--color-bg');
-    this.chargeColor = style.getPropertyValue ('--color-charging');
+    this.chargeColor = style.getPropertyValue('--color-charging');
     this.axiscolor = style.getPropertyValue('--color-axis');
 
     var i;
@@ -35,7 +35,7 @@ class PowerGraph {
       this.colors[i] = wbdata.chargePoint[i].color;
     }
     for (i = 0; i < 8; i++) {
-      this.colors[8+i] = wbdata.shDevice[i].color;
+      this.colors[8 + i] = wbdata.shDevice[i].color;
     }
     var figure = d3.select("figure#powergraph");
     this.svg = figure.append("svg")
@@ -49,12 +49,11 @@ class PowerGraph {
     if (this.initialized) { // steady state
 
       if (topic === "openWB/graph/lastlivevalues") {
-         //console.log("UPDATE POWERGRAPH");
         const values = this.extractValues(payload.toString());
         this.graphRefreshCounter++;
         this.graphData.push(values);
         this.updateGraph();
-        
+
         if (this.graphData > 60) {
           this.initialized = false;
           this.initialGraphData = true;
@@ -62,12 +61,10 @@ class PowerGraph {
         }
       }
     } else { // init phase
-       //console.log("INIT POWERGRAPH");
       const t = topic;
       if (t.substring(t.length - 13, t.length) === "alllivevalues") {
         // init message
         const serialNo = t.substring(13, t.length - 13);
-       // console.log ("------------ graph serial : " + serialNo);
         var bulkdata = payload.toString().split("\n");
         if (bulkdata.length <= 1) {
           bulkdata = [];
@@ -102,8 +99,8 @@ class PowerGraph {
     const elements = payload.split(",");
     // const  values = new WbData(new Date(d3.timeParse("%H:%M:%S")(elements[0])));
     var values = {};
-    values.date = new Date (d3.timeParse ("%H:%M:%S")(elements[0]));
-    
+    values.date = new Date(d3.timeParse("%H:%M:%S")(elements[0]));
+
 
     if (+elements[1] > 0) {
       values.gridPull = +elements[1];
@@ -124,11 +121,11 @@ class PowerGraph {
     var i;
     values.lp0 = +elements[4];
     values.lp1 = +elements[5];
-    for (i=2; i < 9; i++) {
-      values["lp"+i] = +elements[11+i];
+    for (i = 2; i < 9; i++) {
+      values["lp" + i] = +elements[11 + i];
     }
-    for (i=0; i < 8; i++) {
-      values["sh"+i] = +elements[20+i];
+    for (i = 0; i < 8; i++) {
+      values["sh" + i] = +elements[20 + i];
     }
 
     return values;
@@ -145,12 +142,12 @@ class PowerGraph {
   createOrUpdateSvg() {
     this.svg.selectAll("*").remove();
 
-   
+
     this.g = this.svg
       .append("g")
       .attr(
         "transform",
-        "translate(" + this.margin.left + "," + this.margin.top  + ")"
+        "translate(" + this.margin.left + "," + this.margin.top + ")"
       );
     return this.g;
   }
@@ -159,25 +156,25 @@ class PowerGraph {
     const height = this.height - this.margin.top - this.margin.bottom;
     const width = this.width - this.margin.left - this.margin.bottom;
 
-    this.drawSourceGraph(svg, width, height/2);
-    this.drawUsageGraph (svg, width, height/2);
-    this.drawXAxis (svg, width, height);
-    this.drawSoc (svg, width, height/2);
+    this.drawSourceGraph(svg, width, height / 2);
+    this.drawUsageGraph(svg, width, height / 2);
+    this.drawXAxis(svg, width, height);
+    this.drawSoc(svg, width, height / 2);
   }
 
-  drawSourceGraph (svg,width, height) {
+  drawSourceGraph(svg, width, height) {
     const keys = ["selfUsage", "gridPush", "gridPull"];
-    const xScale = d3.scaleTime().range([0, width -10]);
-    const yScale = d3.scaleLinear().range([height-10,0]);
+    const xScale = d3.scaleTime().range([0, width - 10]);
+    const yScale = d3.scaleLinear().range([height - 10, 0]);
     const extent = d3.extent(this.graphData, (d) =>
       Math.max(d.solarPower + d.gridPull, d.selfUsage + d.gridPush));
 
-    xScale.domain (d3.extent (this.graphData, (d) => d.date));
-    yScale.domain([0,extent[1]]);
-    
+    xScale.domain(d3.extent(this.graphData, (d) => d.date));
+    yScale.domain([0, extent[1]]);
+
     const stackGen = d3.stack().keys(keys);
     const stackedSeries = stackGen(this.graphData);
-    
+
     svg.selectAll(".sourceareas")
       .data(stackedSeries)
       .join("path")
@@ -185,41 +182,41 @@ class PowerGraph {
         .x((d, i) => xScale(this.graphData[i].date))
         .y0((d) => yScale(d[0]))
         .y1((d) => yScale(d[1]))
-    )
-    .attr("fill", (d, i) => this.gridColors[i]);
+      )
+      .attr("fill", (d, i) => this.gridColors[i]);
 
     const yAxis = svg.call(d3.axisLeft(yScale)
       .tickSizeInner(-width)
       .ticks(6)
-      .tickFormat ((d,i)=> (d==0) ? "" : (Math.round(d/100)/10) + " kW"))
+      .tickFormat((d, i) => (d == 0) ? "" : (Math.round(d / 100) / 10) + " kW"))
       ;
     yAxis.selectAll(".tick").attr("stroke", this.axiscolor);
-    yAxis.selectAll(".tick line").attr("stroke", this.bgcolor); 
+    yAxis.selectAll(".tick line").attr("stroke", this.bgcolor);
     yAxis.select(".domain")
-      .attr ("stroke", this.bgcolor)
-   ;
+      .attr("stroke", this.bgcolor)
+      ;
   }
 
-  drawUsageGraph (svg,width, height) {
-    const xScale = d3.scaleTime().range([0, width -10]);
-    const yScale = d3.scaleLinear().range([height + 10,2*height+10]);
-    
-    xScale.domain (d3.extent (this.graphData, (d) => d.date));
+  drawUsageGraph(svg, width, height) {
+    const xScale = d3.scaleTime().range([0, width - 10]);
+    const yScale = d3.scaleLinear().range([height + 10, 2 * height + 10]);
+
+    xScale.domain(d3.extent(this.graphData, (d) => d.date));
     const extent = d3.extent(this.graphData, (d) =>
       Math.max(d.housePower + d.lp0 + d.lp1 + d.lp2 + d.lp3 + d.lp4
         + d.lp5 + d.lp6 + d.lp7 + d.sh0 + d.sh1 + d.sh2 + d.sh3 + d.sh4
-        + d.sh5 + d.sh6 + d.sh7 , 0)
+        + d.sh5 + d.sh6 + d.sh7, 0)
     );
-    yScale.domain([0,(extent[1])]);
+    yScale.domain([0, (extent[1])]);
     const keys = ["lp0", "lp1", "lp2", "lp3", "lp4",
-                  "lp5", "lp6", "lp7",
-                  "sh0", "sh1", "sh2", "sh3", "sh4",
-                  "sh5", "sh6", "sh7",
-                  "housePower" ];
-    
+      "lp5", "lp6", "lp7",
+      "sh0", "sh1", "sh2", "sh3", "sh4",
+      "sh5", "sh6", "sh7",
+      "housePower"];
+
     const stackGen = d3.stack().keys(keys);
     const stackedSeries = stackGen(this.graphData);
-    
+
     svg.selectAll(".targetareas")
       .data(stackedSeries)
       .join("path")
@@ -227,67 +224,67 @@ class PowerGraph {
         .x((d, i) => xScale(this.graphData[i].date))
         .y0((d) => yScale(d[0]))
         .y1((d) => yScale(d[1]))
-    )
-    .attr("fill", (d, i) => this.colors[i]);
+      )
+      .attr("fill", (d, i) => this.colors[i]);
 
     const yAxis = svg.append("g").call(d3.axisLeft(yScale)
-    .tickSizeInner(-width)
+      .tickSizeInner(-width)
       .ticks(6)
-      .tickFormat ((d,i)=> (d==0) ? "" : (Math.round(d/100)/10) + " kW")
-      );
+      .tickFormat((d, i) => (d == 0) ? "" : (Math.round(d / 100) / 10) + " kW")
+    );
     yAxis.selectAll(".tick").attr("stroke", this.axiscolor);
-    yAxis.selectAll(".tick line").attr("stroke", this.bgcolor); 
+    yAxis.selectAll(".tick line").attr("stroke", this.bgcolor);
     yAxis.select(".domain")
-      .attr ("stroke", this.bgcolor)
-   ;
+      .attr("stroke", this.bgcolor)
+      ;
   }
 
-  drawXAxis (svg, width, height) {
-    const xScale = d3.scaleTime().range([0, width -10]);
-    xScale.domain (d3.extent (this.graphData, (d) => d.date));
+  drawXAxis(svg, width, height) {
+    const xScale = d3.scaleTime().range([0, width - 10]);
+    xScale.domain(d3.extent(this.graphData, (d) => d.date));
 
     const xAxisGenerator = d3
-    .axisBottom(xScale)
-    .ticks(4)
-    .tickSizeInner(-10)
-    .tickFormat(d3.timeFormat("%H:%M"));
+      .axisBottom(xScale)
+      .ticks(4)
+      .tickSizeInner(-10)
+      .tickFormat(d3.timeFormat("%H:%M"));
 
-  const xAxis = svg.append("g").call(xAxisGenerator);
-  xAxis.attr("transform", "translate(0," + (height/2 -6 ) + ")");
-  xAxis.selectAll(".tick").attr("stroke", this.axiscolor);
-  xAxis.selectAll(".tick line").attr("stroke", this.bgcolor);
-  xAxis.select(".domain")
-  .attr ("stroke", this.bgcolor)
-;
+    const xAxis = svg.append("g").call(xAxisGenerator);
+    xAxis.attr("transform", "translate(0," + (height / 2 - 6) + ")");
+    xAxis.selectAll(".tick").attr("stroke", this.axiscolor);
+    xAxis.selectAll(".tick line").attr("stroke", this.bgcolor);
+    xAxis.select(".domain")
+      .attr("stroke", this.bgcolor)
+      ;
 
   }
-  drawSoc (svg, width, height) {
-    const xScale = d3.scaleTime().range([0,width - 10]);
-    const yScale = d3.scaleLinear().range ([height-10,0]);
-    xScale.domain (d3.extent (this.graphData, (d) => d.date));
-    yScale.domain ([0,100]);
+  drawSoc(svg, width, height) {
+    const xScale = d3.scaleTime().range([0, width - 10]);
+    const yScale = d3.scaleLinear().range([height - 10, 0]);
+    xScale.domain(d3.extent(this.graphData, (d) => d.date));
+    yScale.domain([0, 100]);
 
     svg.append("path")
-      .datum (this.graphData)
-      .attr ("stroke", this.chargeColor)
-      .attr ("stroke-width", 1)
+      .datum(this.graphData)
+      .attr("stroke", this.chargeColor)
+      .attr("stroke-width", 1)
       .style("stroke-dasharray", ("3, 3"))
-      .attr ("d", d3.line()
-        .x ((d,i) => xScale (this.graphData[i].date))
-        .y (d=> yScale (d.soc))
+      .attr("d", d3.line()
+        .x((d, i) => xScale(this.graphData[i].date))
+        .y(d => yScale(d.soc))
       );
 
-    const socAxis = svg.append ("g")
-      .attr ("transform", "translate("+ (width -15) +",0)")
-      .call (d3.axisRight (yScale)
-      .ticks(5)
-      .tickFormat ((d,i)=> (d==0) ? "" : (d+"%")))
-        
+    const socAxis = svg.append("g")
+      .attr("transform", "translate(" + (width - 15) + ",0)")
+      .call(d3.axisRight(yScale)
+        .ticks(5)
+        .tickFormat((d, i) => (d == 0) ? "" : (d + "%")))
+
       ;
     socAxis.selectAll(".tick").attr("stroke", this.axiscolor);
     socAxis.select(".domain")
-      .attr ("stroke", this.bgcolor)
-   ;
+      .attr("stroke", this.bgcolor)
+      ;
   }
 }
 

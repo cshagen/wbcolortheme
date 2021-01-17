@@ -13,21 +13,21 @@ class PowerMeter {
     this.radius = this.width / 2 - this.margin;
     this.cornerRadius = 1;
     this.shapefactor = (Math.PI / 40);
-    
+
   }
 
   // public method to initialize
   init() {
-    const figure = d3.select ("figure#powercircle");
-    this.svg = figure.append ("svg")
-      .attr ("viewBox", `0 0 500 500`);
-      const style = getComputedStyle(document.body);
-      this.houseColor = style.getPropertyValue('--color-house');
-      this.pvColor = style.getPropertyValue('--color-pv');
-      this.exportColor = style.getPropertyValue('--color-export');
-      this.gridColor = style.getPropertyValue('--color-evu');
-      this.bgColor = style.getPropertyValue('--color-bg');
-      this.chargeColor = style.getPropertyValue ('--color-charging');
+    const figure = d3.select("figure#powercircle");
+    this.svg = figure.append("svg")
+      .attr("viewBox", `0 0 500 500`);
+    const style = getComputedStyle(document.body);
+    this.houseColor = style.getPropertyValue('--color-house');
+    this.pvColor = style.getPropertyValue('--color-pv');
+    this.exportColor = style.getPropertyValue('--color-export');
+    this.gridColor = style.getPropertyValue('--color-evu');
+    this.bgColor = style.getPropertyValue('--color-bg');
+    this.chargeColor = style.getPropertyValue('--color-charging');
   }
 
   // public method to update the graph
@@ -40,7 +40,7 @@ class PowerMeter {
   createOrUpdateSvg() {
     this.svg.selectAll("*").remove();
 
-    
+
     const g = this.svg
       .append("g")
       .attr(
@@ -50,13 +50,13 @@ class PowerMeter {
     return g;
   }
 
- 
+
 
   drawGraph(svg) {
-    this.drawSourceArc (svg);
-    this.drawUsageArc (svg);
+    this.drawSourceArc(svg);
+    this.drawUsageArc(svg);
 
- 
+
     this.addLabel(svg, -this.width / 2 + this.margin / 4, -this.height / 2 + this.margin - 10, "left", wbdata.sourceSummary[1]);
     this.addLabel(svg, 0, -this.height / 2 + this.margin - 20, "middle", wbdata.sourceSummary[0]);
     this.addLabel(svg, this.width / 2 - this.margin / 4, -this.height / 2 + this.margin - 10, "end", wbdata.sourceSummary[2]);
@@ -74,8 +74,8 @@ class PowerMeter {
       .style("text-anchor", "middle")
       .style("font-size", "24")
       ;
-    
-      svg.append("text")
+
+    svg.append("text")
       .attr("x", 0)
       .attr("y", 0)
 
@@ -98,8 +98,8 @@ class PowerMeter {
       ;
   }
 
-  drawSourceArc (svg) {
-    
+  drawSourceArc(svg) {
+
 
     // Define the generator for the segments
     const pieGenerator = d3.pie()
@@ -115,13 +115,13 @@ class PowerMeter {
 
     // Add the chart to the svg
     svg.selectAll("sources")
-      .data (pieGenerator (wbdata.sourceSummary)).enter()
+      .data(pieGenerator(wbdata.sourceSummary)).enter()
       .append("path")
       .attr("d", arc)
       .attr("fill", (d) => d.data.color);
   }
 
-  drawUsageArc (svg) {
+  drawUsageArc(svg) {
 
     // Define the generator for the segments
     const pieGenerator = d3.pie()
@@ -137,12 +137,12 @@ class PowerMeter {
 
     // Add the chart to the svg
     svg.selectAll("consumers")
-      .data (pieGenerator (wbdata.usageDetails)).enter()
+      .data(pieGenerator(wbdata.usageDetails)).enter()
       .append("path")
       .attr("d", arc)
       .attr("fill", (d) => d.data.color);
   }
- 
+
   addLabel(svg, x, y, anchor, data) {
     const labelFontSize = 22;
     svg

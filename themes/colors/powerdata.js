@@ -251,10 +251,8 @@ function formatWatt(watt) {
 }
 
 function formatTime(seconds) {
-	//console.log (seconds);
 	const hours = (seconds / 3600).toFixed(0);
 	const minutes = ((seconds % 3600) / 60).toFixed(0);
-	//console.log (minutes);
 	if (hours > 0) {
 		return (hours + "h " + minutes + " min");
 	} else {

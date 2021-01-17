@@ -87,13 +87,10 @@ class SmartHomeList {
 
   updateValues() {
     this.consumers = wbdata.shDevice.filter(dv => dv.configured);
-    // console.log (this.chargepoints);
-
   }
 }
 
 function shModeClicked(i) {
-  console.log("------------------------------ click smarthome " + i);
   // send mqtt set to enable/disable Device after click
   if (wbdata.shDevice[i].isAutomatic) {
     publish("1", "openWB/config/set/SmartHome/Devices/" + (+i + 1) + "/mode");
@@ -105,7 +102,6 @@ function shModeClicked(i) {
 };
 
 function shDeviceClicked(i) {
-  console.log("------------------------------ click smarthome " + i);
   if (!wbdata.shDevice[i].isAutomatic) {
     if (wbdata.shDevice[i].isOn) {
       publish("0", "openWB/config/set/SmartHome/Device" + (+i + 1) + "/device_manual_control");

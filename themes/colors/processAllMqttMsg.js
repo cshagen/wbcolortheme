@@ -396,32 +396,32 @@ function processGlobalMessages(mqttmsg, mqttpayload) {
 		wbdata.updateGlobal("houseEnergy", hausverbrauchDailyYield);
 	}
 
-	if ( mqttmsg == 'openWB/global/WHouseConsumption' ) {
+	if (mqttmsg == 'openWB/global/WHouseConsumption') {
 		var powerHouse = parseInt(mqttpayload, 10);
-		if ( isNaN(powerHouse) ) {
+		if (isNaN(powerHouse)) {
 			powerHouse = 0;
 		}
-		if ( powerHouse > 999 ) {
-			powerHouse = (powerHouse / 1000).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' kW';
+		if (powerHouse > 999) {
+			powerHouse = (powerHouse / 1000).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' kW';
 		} else {
 			powerHouse += ' W';
 		}
 		$('#hausverbrauch').text(powerHouse);
 	}
-	else if ( mqttmsg == 'openWB/global/WAllChargePoints') {
+	else if (mqttmsg == 'openWB/global/WAllChargePoints') {
 		var powerAllLp = parseInt(mqttpayload, 10);
-		if ( isNaN(powerAllLp) ) {
+		if (isNaN(powerAllLp)) {
 			powerAllLp = 0;
 		}
 		if (powerAllLp > 999) {
-			powerAllLp = (powerAllLp / 1000).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' kW';
+			powerAllLp = (powerAllLp / 1000).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' kW';
 		} else {
 			powerAllLp += ' W';
 		}
 		$('#powerAllLp').text(powerAllLp);
 	}
-	else if ( mqttmsg == 'openWB/global/strLastmanagementActive' ) {
-		if ( mqttpayload.length >= 5 ) {
+	else if (mqttmsg == 'openWB/global/strLastmanagementActive') {
+		if (mqttpayload.length >= 5) {
 			// if there is info-text in payload for topic, show the text
 			$('#lastregelungaktiv').text(mqttpayload);
 		} else {
@@ -429,8 +429,8 @@ function processGlobalMessages(mqttmsg, mqttpayload) {
 			$('#lastregelungaktiv').text('');
 		}
 	}
-	else if ( mqttmsg == 'openWB/global/awattar/boolAwattarEnabled' ) {
-		if ( mqttpayload == '1' ) {
+	else if (mqttmsg == 'openWB/global/awattar/boolAwattarEnabled') {
+		if (mqttpayload == '1') {
 			$('#awattarEnabledIcon').show();
 			$('#awattar').show();
 		} else {
@@ -438,7 +438,7 @@ function processGlobalMessages(mqttmsg, mqttpayload) {
 			$('#awattar').hide();
 		}
 	}
-	else if ( mqttmsg == 'openWB/global/awattar/pricelist' ) {
+	else if (mqttmsg == 'openWB/global/awattar/pricelist') {
 		// read awattar values and trigger graph creation
 		// loadawattargraph will show awattardiv is awataraktiv=1 in openwb.conf
 		// graph will be redrawn after 5 minutes (new data pushed from cron5min.sh)
@@ -452,13 +452,13 @@ function processGlobalMessages(mqttmsg, mqttpayload) {
 
 		loadawattargraph();
 	}
-	else if ( mqttmsg == 'openWB/global/awattar/MaxPriceForCharging' ) {
+	else if (mqttmsg == 'openWB/global/awattar/MaxPriceForCharging') {
 		setInputValue('MaxPriceForCharging', mqttpayload);
 	}
-	else if ( mqttmsg == 'openWB/global/awattar/ActualPriceForCharging' ) {
-		$('#ActualPriceForCharging').text(parseFloat(mqttpayload).toLocaleString(undefined, {maximumFractionDigits: 2}));
+	else if (mqttmsg == 'openWB/global/awattar/ActualPriceForCharging') {
+		$('#ActualPriceForCharging').text(parseFloat(mqttpayload).toLocaleString(undefined, { maximumFractionDigits: 2 }));
 	}
-	else if ( mqttmsg == 'openWB/global/ChargeMode' ) {
+	else if (mqttmsg == 'openWB/global/ChargeMode') {
 		// set modal button colors depending on charge mode
 		// set visibility of divs
 		// set visibility of priority icon depending on charge mode
@@ -520,26 +520,26 @@ function processGlobalMessages(mqttmsg, mqttpayload) {
 
 		}
 	}
-	else if ( mqttmsg == 'openWB/global/DailyYieldAllChargePointsKwh') {
+	else if (mqttmsg == 'openWB/global/DailyYieldAllChargePointsKwh') {
 		var llaDailyYield = parseFloat(mqttpayload);
-		if ( isNaN(llaDailyYield) ) {
+		if (isNaN(llaDailyYield)) {
 			llaDailyYield = 0;
 		}
-		if ( llaDailyYield >= 0 ) {
-			var llaDailyYieldStr = ' (' + llaDailyYield.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' kWh)';
+		if (llaDailyYield >= 0) {
+			var llaDailyYieldStr = ' (' + llaDailyYield.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' kWh)';
 			$('#lladailyyield').text(llaDailyYieldStr);
 		} else {
 			$('#lladailyyield').text("");
 		}
 
 	}
-	else if ( mqttmsg == 'openWB/global/DailyYieldHausverbrauchKwh') {
+	else if (mqttmsg == 'openWB/global/DailyYieldHausverbrauchKwh') {
 		var hausverbrauchDailyYield = parseFloat(mqttpayload);
-		if ( isNaN(hausverbrauchDailyYield) ) {
+		if (isNaN(hausverbrauchDailyYield)) {
 			hausverbrauchDailyYield = 0;
 		}
-		if ( hausverbrauchDailyYield >= 0 ) {
-			var hausverbrauchDailyYieldStr = ' (' + hausverbrauchDailyYield.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' kWh)';
+		if (hausverbrauchDailyYield >= 0) {
+			var hausverbrauchDailyYieldStr = ' (' + hausverbrauchDailyYield.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' kWh)';
 			$('#hausverbrauchdailyyield').text(hausverbrauchDailyYieldStr);
 		} else {
 			$('#hausverbrauchdailyyield').text("");
