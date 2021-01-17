@@ -250,6 +250,13 @@ function formatWatt(watt) {
 	}
 }
 
+function formatWattH(watt) {
+	if (watt >= 1000) {
+		return ((Math.round(watt / 100) / 10) + " kWh");
+	} else {
+		return (watt + " Wh");
+	}
+}
 function formatTime(seconds) {
 	const hours = (seconds / 3600).toFixed(0);
 	const minutes = ((seconds % 3600) / 60).toFixed(0);

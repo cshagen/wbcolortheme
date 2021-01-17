@@ -20,7 +20,14 @@ class YieldMeter {
 
 	// to be called when the document is loaded
 	init() {
-
+		const style = getComputedStyle(document.body);
+    this.houseColor = style.getPropertyValue('--color-house');
+    this.pvColor = style.getPropertyValue('--color-pv');
+    this.exportColor = style.getPropertyValue('--color-export');
+    this.gridColor = style.getPropertyValue('--color-evu');
+    this.bgColor = style.getPropertyValue('--color-bg');
+		this.chargeColor = style.getPropertyValue('--color-charging');
+		this.axisColor = style.getPropertyValue('--color-axis');
 	}
 
 	// to be called when values have changed
@@ -75,17 +82,13 @@ class YieldMeter {
 			.attr("height", (d) => +this.height - this.margin - this.margin - this.yScale(d.energy))
 			.attr("fill", (d) => d.color);
 
-
-
-		const axiscolor = "steelblue";
-
 		const xAxisGenerator = d3.axisBottom(this.xScale);
 		const xAxis = svg
 			.append("g")
 			.attr("transform", "translate(0," + (+this.height - 80) + ")")
 			.call(xAxisGenerator);
-		xAxis.selectAll(".tick").attr("stroke", axiscolor);
-		xAxis.selectAll(".tick line").attr("stroke", axiscolor);
+		xAxis.selectAll(".tick").attr("stroke", this.axisColor);
+		xAxis.selectAll(".tick line").attr("stroke", this.axisColor);
 
 
 		const yAxisGenerator = d3.axisLeft(this.yScale)
@@ -95,10 +98,8 @@ class YieldMeter {
 			// .ticks(6)
 			.tickSizeInner(-this.width);
 
-
 		const yAxis = svg.append("g")
 			.call(yAxisGenerator);
-
 
 		yAxis.append("text")
 			.attr("y", 6)
@@ -106,8 +107,8 @@ class YieldMeter {
 			.attr("text-anchor", "end")
 			.text("energy");
 
-		yAxis.selectAll(".tick").attr("stroke", axiscolor);
-		yAxis.selectAll(".tick line").attr("stroke", "midnightblue");
+		yAxis.selectAll(".tick").attr("stroke", this.axisColor);
+		yAxis.selectAll(".tick line").attr("stroke", this.bgColor);
 
 		const labels = svg.selectAll(".label")
 			.data(this.plotdata)
@@ -120,7 +121,7 @@ class YieldMeter {
 
 			.attr("text-anchor", "middle")
 			.attr("fill", (d) => d.color)
-			.text((d) => (formatWatt(d.energy * 1000)));
+			.text((d) => (formatWattH(d.energy * 1000)));
 	}
 }
 var yieldMeter = new YieldMeter();
