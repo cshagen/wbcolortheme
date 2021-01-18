@@ -11,6 +11,7 @@ class YieldMeter {
 	bardata;
 	xScale;
 	yScale;
+	svg;
 
 	constructor() {
 		this.width = 500;
@@ -20,6 +21,10 @@ class YieldMeter {
 
 	// to be called when the document is loaded
 	init() {
+		const figure = d3.select("figure#energymeter");
+		this.svg = figure.append("svg")
+			.attr("viewBox", `0 0 500 500`);
+
 		const style = getComputedStyle(document.body);
     this.houseColor = style.getPropertyValue('--color-house');
     this.pvColor = style.getPropertyValue('--color-pv');
@@ -36,24 +41,19 @@ class YieldMeter {
 			.filter((row) => (row.energy > 0))
 			.concat(wbdata.usageDetails
 				.filter((row) => (row.energy > 0)));
-		const svg = this.createSvg();
+		const svg = this.createOrUpdateSvg();
 		this.drawChart(svg);
 	};
 
-	createSvg() {
-		const figure = d3.select("figure#yieldmeter");
-		figure.selectAll("*").remove();
-
-		const svg = figure.append("svg")
-			.attr("viewBox", `0 0 500 500`);
-
-		svg
+	createOrUpdateSvg() {
+		this.svg.selectAll("*").remove();
+		/* this.svg
 			.append("rect")
 			.attr("width", "100%")
 			.attr("height", "100%")
-			.attr("fill", "midnightblue");
+			.attr("fill", "midnightblue"); */
 
-		const g = svg.append("g")
+		const g = this.svg.append("g")
 			.attr("transform", "translate(" + this.margin + "," + this.margin + ")");
 		this.xScale = d3.scaleBand()
 			.range([0, this.width - this.margin - 10])
@@ -95,7 +95,7 @@ class YieldMeter {
 			.tickFormat(function (d) {
 				return d + " kWh";
 			})
-			// .ticks(6)
+			.ticks(6)
 			.tickSizeInner(-this.width);
 
 		const yAxis = svg.append("g")

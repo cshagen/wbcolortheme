@@ -187,7 +187,7 @@ class PowerGraph {
 
     const yAxis = svg.call(d3.axisLeft(yScale)
       .tickSizeInner(-width)
-      .ticks(6)
+      .ticks(5)
       .tickFormat((d, i) => (d == 0) ? "" : (Math.round(d / 100) / 10) + " kW"))
       ;
     yAxis.selectAll(".tick").attr("stroke", this.axiscolor);
@@ -229,7 +229,7 @@ class PowerGraph {
 
     const yAxis = svg.append("g").call(d3.axisLeft(yScale)
       .tickSizeInner(-width)
-      .ticks(6)
+      .ticks(5)
       .tickFormat((d, i) => (d == 0) ? "" : (Math.round(d / 100) / 10) + " kW")
     );
     yAxis.selectAll(".tick").attr("stroke", this.axiscolor);

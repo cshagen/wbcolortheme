@@ -35,7 +35,7 @@ class WbData {
 		];
 		this.usageSummary = [
 			{ name: "Haus", power: 0, energy: 0, color: "white" },
-			{ name: "Verbraucher", power: 0, energy: 0, color: "white" },
+			{ name: "Geräte", power: 0, energy: 0, color: "white" },
 			{ name: "Laden", power: 0, energy: 0, color: "white" }
 		]
 		this.usageDetails = [this.usageSummary[0]];

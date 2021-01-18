@@ -5,7 +5,6 @@
  */
 
 class PowerMeter {
-
   constructor() {
     this.width = 500;
     this.height = this.width;
@@ -13,12 +12,11 @@ class PowerMeter {
     this.radius = this.width / 2 - this.margin;
     this.cornerRadius = 1;
     this.shapefactor = (Math.PI / 40);
-
   }
 
   // public method to initialize
   init() {
-    const figure = d3.select("figure#powercircle");
+    const figure = d3.select("figure#powermeter");
     this.svg = figure.append("svg")
       .attr("viewBox", `0 0 500 500`);
     const style = getComputedStyle(document.body);
@@ -39,8 +37,6 @@ class PowerMeter {
   // create the SVG that will contain our graph, and configure it
   createOrUpdateSvg() {
     this.svg.selectAll("*").remove();
-
-
     const g = this.svg
       .append("g")
       .attr(
@@ -50,13 +46,9 @@ class PowerMeter {
     return g;
   }
 
-
-
   drawGraph(svg) {
     this.drawSourceArc(svg);
     this.drawUsageArc(svg);
-
-
     this.addLabel(svg, -this.width / 2 + this.margin / 4, -this.height / 2 + this.margin - 10, "left", wbdata.sourceSummary[1]);
     this.addLabel(svg, 0, -this.height / 2 + this.margin - 20, "middle", wbdata.sourceSummary[0]);
     this.addLabel(svg, this.width / 2 - this.margin / 4, -this.height / 2 + this.margin - 10, "end", wbdata.sourceSummary[2]);
@@ -83,13 +75,11 @@ class PowerMeter {
       .attr("fill", this.chargeColor)
       .attr("backgroundcolor", this.bgColor)
       .style("text-anchor", "middle")
-      .style("font-size", "24")
-      ;
+      .style("font-size", "24");
 
     svg.append("text")
       .attr("x", 0)
       .attr("y", this.height / 8)
-
       .text("Verbrauch: " + formatWatt(wbdata.housePower + wbdata.usageSummary[1].power + wbdata.usageSummary[2].power))
       .attr("fill", this.houseColor)
       .attr("backgroundcolor", this.bgColor)
@@ -99,8 +89,6 @@ class PowerMeter {
   }
 
   drawSourceArc(svg) {
-
-
     // Define the generator for the segments
     const pieGenerator = d3.pie()
       .value((record) => Number(record.power))
@@ -157,34 +145,9 @@ class PowerMeter {
       ;
   }
 
-  addList(svg, table) {
-    const headers = ["Name", "Aktuell", "Heute"];
-    svg.selectAll("*").remove();
-    svg.append("thead")
-      .append("tr")
-      .attr("class", "tablecell")
-      .selectAll("headers")
-      .data(headers).enter()
-      .append("th")
-      .text((data) => data);
-
-    const rows = svg.append("tbody")
-      .selectAll("rows")
-      .data(table).enter()
-      .append("p")
-      .attr("style", row => this.calcColor(row))
-      .attr("class", "tablecell")
-      .text((row) => row.name + " : " + formatWatt(row.power))
-
-      ;
-
-
-  }
-
   calcColor(row) {
     return ("color:" + row.color + "; text-align:center");
   }
-
 }
 
 var powerMeter = new PowerMeter();
