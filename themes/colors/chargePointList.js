@@ -95,12 +95,15 @@ class ChargePointList {
     }
     button.append("span").text(" ");
     if (row.isPluggedIn) {
+      const span = 
       button.append("span")
         .attr("class", "fa fa-xs fa-plug")
         ;
+        span.classed("text-orange", (!row.isCharging))
+        span.classed("text-green", row.isCharging)
     }
-    button.classed("text-orange", (!row.isCharging))
-    button.classed("text-green", row.isCharging)
+    console.log (row);
+ 
     if (row.willFinishAtTime) {
       button.append("span")
         .attr("class", "fa fa-xs fa-flag-checkered");
