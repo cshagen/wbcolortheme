@@ -5,7 +5,7 @@
 
 class ChargePointList {
   tbody;
-  formSection;
+  footer;
 
   constructor() {
     this.chargepoints = [];
@@ -33,14 +33,14 @@ class ChargePointList {
       ;
 
     this.tbody = table.append("tbody");
-    this.formSection = div.append("div");
+    this.footer = div.append("div");
   }
 
   // update if data has changed
   update() {
     this.updateValues();
     this.tbody.selectAll("*").remove();
-    this.formSection.selectAll("*").remove();
+    this.footer.selectAll("*").remove();
 
     const rows = this.tbody
       .selectAll("rows")
@@ -64,6 +64,12 @@ class ChargePointList {
       .text(data => data);
     rows.append((row, i) => this.cpSocButtonCell(row, i));
 
+    if (wbdata.isPriceChartEnabled) {
+      this.footer.append ('p')
+      .attr ("class", "pt-3 pb-0 m-0")
+      .style("text-align" ,"center")
+        .text ("Aktueller Strompreis: " + wbdata.currentPowerPrice + " Cent/kWh");
+    }
   }
 
 
@@ -102,8 +108,6 @@ class ChargePointList {
         span.classed("text-orange", (!row.isCharging))
         span.classed("text-green", row.isCharging)
     }
-    console.log (row);
- 
     if (row.willFinishAtTime) {
       button.append("span")
         .attr("class", "fa fa-xs fa-flag-checkered");
