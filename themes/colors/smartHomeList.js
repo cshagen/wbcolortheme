@@ -42,16 +42,25 @@ class SmartHomeList {
         .append("tr")
         .attr("style", row => this.calcColor(row));
 
-      rows.append("td")
+      const cell = rows.append("td")
         .attr("class", "tablecell py-1 px-1")
-        .append("button")
-        .attr("id", (row, i) => "shbutton-" + i)
-        .attr("class", row => this.deviceClass(row))
-        .attr("style", row => this.calcColor(row))
         .attr("onClick", (row, i) => "shDeviceClicked(" + i + ")")
-        .classed("disabled", (row => (row.isAutomatic)))
+        .attr("id", (row, i) => "shbutton-" + i)
+        .attr("style", "text-align:left; vertical-align:middle;")
+        .append("span")
         .text(row => row.name);
-
+      
+        cell.append("span")
+        .attr("class", (row) => row.isOn ? "fa fa-toggle-on text-green px-2" : "fa fa-toggle-off text-red px-2");
+        
+    
+    /*     if (row.isEnabled) { 
+          cell.append("span")
+          .attr("class", "fa fa-toggle-on text-green px-2")
+         } else {
+          cell.append("span")
+           .attr("class", "fa fa-toggle-off text-red px-2")
+        } */
       rows.append("td")
         .attr("class", "tablecell py-1 px-1")
         .attr("style", "vertical-align: middle;")

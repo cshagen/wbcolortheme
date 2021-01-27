@@ -17,7 +17,7 @@ class YieldMeter {
 		this.width = 500;
 		this.height = 500;
 		this.margin = {
-			top: 25, bottom: 30, left: 30, right: 40
+			top: 25, bottom: 30, left: 15, right: 0
 		};
 		this.labelfontsize = 16;
 	}
@@ -50,16 +50,10 @@ class YieldMeter {
 
 	createOrUpdateSvg() {
 		this.svg.selectAll("*").remove();
-		/* this.svg
-			.append("rect")
-			.attr("width", "100%")
-			.attr("height", "100%")
-			.attr("fill", "midnightblue"); */
-
 		const g = this.svg.append("g")
 			.attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
 		this.xScale = d3.scaleBand()
-			.range([0, this.width - this.margin.right - 10])
+			.range([0, this.width - this.margin.left - this.margin.right ])
 			.padding(0.4);
 		this.yScale = d3.scaleLinear()
 			.range([this.height - this.margin.bottom - this.margin.top, 0]);
@@ -85,17 +79,7 @@ class YieldMeter {
 			.attr("height", (d) => this.height - this.yScale(d.energy) - this.margin.top - this.margin.bottom)
 			.attr("fill", (d) => d.color);
 
-		/* 	const xAxisGenerator = d3.axisBottom(this.xScale);
-			const xAxis = svg
-				.append("g")
-				.attr ("class", "axis")
-				.attr("transform", "translate(0," + (+this.height - this.margin.top -this.margin.bottom) + ")")
-				.call(xAxisGenerator);
-			xAxis.selectAll(".tick").attr("stroke", this.axisColor);
-			xAxis.selectAll(".tick line").attr("stroke", this.axisColor);
-			xAxis.select(".domain")
-				.attr("stroke", this.bgcolor);
-	*/
+
 		const yAxisGenerator = d3.axisLeft(this.yScale)
 			.tickFormat(function (d) {
 				return ((d > 0) ? d : "");
@@ -119,10 +103,6 @@ class YieldMeter {
 		yAxis.selectAll(".tick line").attr("stroke", this.bgColor);
 		yAxis.select(".domain")
 			.attr("stroke", this.bgcolor);
-
-
-
-
 
 		const labels = svg.selectAll(".label")
 			.data(this.plotdata)

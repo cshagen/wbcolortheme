@@ -29,7 +29,6 @@ class WbData {
 
 		this.shDevice = Array.from({ length: 9 }, (v, i) => new SHDevice(i));
 
-		// this.chargeColors = d3.schemeGreens[9];
 		this.sourceSummary = [
 			{ name: "PV", power: 0, energy: 0, color: "white" },
 			{ name: "Netz", power: 0, energy: 0, color: "white" },
@@ -144,6 +143,7 @@ class WbData {
 			case 'energy':
 				this.updateUsageSummary(2, "energy", this.shDevice.filter(dev => dev.configured).reduce((sum, consumer) => sum + consumer.energy, 0));
 				break;
+			
 			default:
 				break;
 		}
@@ -171,17 +171,21 @@ class WbData {
 		this[field] = value;
 		switch (field) {
 			case 'batteryPowerImport': this.usageSummary[3].power = value;
+			powerMeter.update();
 				break;
 			case 'batteryPowerExport': this.sourceSummary[2].power = value;
-				break;
+				powerMeter.update();
+				break;			
 			case 'batteryEnergyExport': this.usageSummary[3].energy = value;
+				yieldMeter.update();
 				break;
 			case 'batteryEnergyImport': this.sourceSummary[2].energy = value;
+				yieldMeter.update();
 				break;
 			default:
 				break;
 		}
-		batteryList.update();
+		batteryList.update();		
 	}
 
 	updateSourceSummary(index, field, value) {

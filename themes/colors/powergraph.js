@@ -1,23 +1,19 @@
 class PowerGraph {
-
-  graphData;
-  initialGraphData;
   svg;
-  axiscolor;
-
-
-  margin = { top: 10, right: 20, bottom: 20, left: 25 };
-
+  
   constructor() {
     this.graphData = [];
     this.initCounter = 0;
+    this.graphdata = []
     this.initialGraphData = [];
     this.initialized = false;
     this.colors = [];
     this.gridColors = [];
+    this.axiscolor="white";
     this.graphRefreshCounter = 0;
     this.width = 500;
     this.height = 500;
+    this.margin = { top: 10, right: 20, bottom: 20, left: 25 };
   }
 
   init() {
@@ -46,7 +42,6 @@ class PowerGraph {
       .attr("viewBox", `0 0 500 500`);
 
   }
-
 
   update(topic, payload) {
 
@@ -98,7 +93,6 @@ class PowerGraph {
     }
   }
 
-
   extractValues(payload) {
     const elements = payload.split(",");
     var values = {};
@@ -130,8 +124,8 @@ class PowerGraph {
     for (i = 0; i < 8; i++) {
       values["sh" + i] = +elements[20 + i];
     }
-    values.co1 = +elements[12];
-    values.co2 = +elements[13];
+    values.co0 = +elements[12];
+    values.co1 = +elements[13];
     if (+elements[7] > 0) {
       values.batIn = +elements[7];
       values.batOut = 0;
@@ -221,15 +215,15 @@ class PowerGraph {
 
     xScale.domain(d3.extent(this.graphData, (d) => d.date));
     const extent = d3.extent(this.graphData, (d) =>
-      Math.max(d.housePower + d.lp0 + d.lp1 + d.lp2 + d.lp3 + d.lp4
+      (d.housePower + d.lp0 + d.lp1 + d.lp2 + d.lp3 + d.lp4
         + d.lp5 + d.lp6 + d.lp7 + d.sh0 + d.sh1 + d.sh2 + d.sh3 + d.sh4
-        + d.sh5 + d.sh6 + d.sh7, 0)
+        + d.sh5 + d.sh6 + d.sh7 + d.co0 + d.co1)
     );
     yScale.domain([0, (extent[1])]);
     const keys = ["lp0", "lp1", "lp2", "lp3", "lp4",
       "lp5", "lp6", "lp7",
       "sh0", "sh1", "sh2", "sh3", "sh4",
-      "sh5", "sh6", "sh7", "co1", "co2", "housePower", "batIn"];
+      "sh5", "sh6", "sh7", "co0", "co1", "housePower", "batIn"];
 
     const stackGen = d3.stack().keys(keys);
     const stackedSeries = stackGen(this.graphData);
