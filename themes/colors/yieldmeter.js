@@ -40,7 +40,7 @@ class YieldMeter {
 
 	// to be called when values have changed
 	update() {
-		this.plotdata = wbdata.sourceSummary
+		this.plotdata = Object.values(wbdata.sourceSummary)
 			.filter((row) => (row.energy > 0))
 			.concat(wbdata.usageDetails
 				.filter((row) => (row.energy > 0)));

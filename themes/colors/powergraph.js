@@ -1,6 +1,6 @@
 class PowerGraph {
   svg;
-  
+
   constructor() {
     this.graphData = [];
     this.initCounter = 0;
@@ -9,7 +9,7 @@ class PowerGraph {
     this.initialized = false;
     this.colors = [];
     this.gridColors = [];
-    this.axiscolor="white";
+    this.axiscolor = "white";
     this.graphRefreshCounter = 0;
     this.width = 500;
     this.height = 500;
@@ -27,6 +27,12 @@ class PowerGraph {
     this.bgcolor = style.getPropertyValue('--color-bg');
     this.chargeColor = style.getPropertyValue('--color-charging');
     this.axiscolor = style.getPropertyValue('--color-axis');
+    this.lp1color = style.getPropertyValue('--color-lp1');
+    this.lp2color = style.getPropertyValue('--color-lp2');
+    this.batteryColor = style.getPropertyValue('--color-battery');
+
+
+
 
     var i;
     for (i = 0; i < 8; i++) {
@@ -136,7 +142,7 @@ class PowerGraph {
       values.batIn = 0;
       values.batOut = 0;
     };
-    values.batSoc = +elements[8];
+    values.batterySoc = +elements[8];
     return values;
   }
 
@@ -215,9 +221,9 @@ class PowerGraph {
 
     xScale.domain(d3.extent(this.graphData, (d) => d.date));
     const extent = d3.extent(this.graphData, (d) =>
-      (d.housePower + d.lp0 + d.lp1 + d.lp2 + d.lp3 + d.lp4
-        + d.lp5 + d.lp6 + d.lp7 + d.sh0 + d.sh1 + d.sh2 + d.sh3 + d.sh4
-        + d.sh5 + d.sh6 + d.sh7 + d.co0 + d.co1)
+    (d.housePower + d.lp0 + d.lp1 + d.lp2 + d.lp3 + d.lp4
+      + d.lp5 + d.lp6 + d.lp7 + d.sh0 + d.sh1 + d.sh2 + d.sh3 + d.sh4
+      + d.sh5 + d.sh6 + d.sh7 + d.co0 + d.co1)
     );
     yScale.domain([0, (extent[1])]);
     const keys = ["lp0", "lp1", "lp2", "lp3", "lp4",
@@ -281,18 +287,70 @@ class PowerGraph {
     xScale.domain(d3.extent(this.graphData, (d) => d.date));
     yScale.domain([0, 100]);
 
-    svg.append("path")
-      .datum(this.graphData)
-      .attr("stroke", this.chargeColor)
-      .attr("stroke-width", 1)
-      .attr("fill", "none")
-      .style("stroke-dasharray", ("3, 3"))
-      
-      .attr("d", d3.line()
-        .x((d, i) => xScale(this.graphData[i].date))
-        .y(d => yScale(d.soc1))
-      );
+    // Chargepoint 1
+    if (wbdata.chargePoint[0].isSocConfigured) {
+      svg.append("path")
+        .datum(this.graphData)
+        .attr("stroke", this.lp1color)
+        .attr("stroke-width", 1)
+        .attr("fill", "none")
+        .style("stroke-dasharray", ("3, 3"))
+        .attr("d", d3.line()
+          .x((d, i) => xScale(this.graphData[i].date))
+          .y(d => yScale(d.soc1))
+        );
 
+      svg.append("text")
+        .attr("x", width - this.margin.right - 3)
+        .attr("y", yScale(this.graphData[this.graphData.length - 1].soc1 + 2))
+        .text(wbdata.chargePoint[0].name)
+        .attr("fill", this.lp1color)
+        .style("font-size", 10)
+        .attr("text-anchor", "end");
+    }
+    // Chargepoint 2
+    if (wbdata.chargePoint[1].isSocConfigured) {
+      svg.append("path")
+        .datum(this.graphData)
+        .attr("stroke", this.lp2color)
+        .attr("stroke-width", 1)
+        .attr("fill", "none")
+        .style("stroke-dasharray", ("3, 3"))
+        .attr("d", d3.line()
+          .x((d, i) => xScale(this.graphData[i].date))
+          .y(d => yScale(d.soc2))
+        );
+      svg.append("text")
+        .attr("x", 3)
+        .attr("y", yScale(this.graphData[this.graphData.length - 1].soc2 + 2))
+        .text(wbdata.chargePoint[1].name)
+        .attr("fill", this.lp2color)
+        .style("font-size", 10)
+        .attr("text-anchor", "start");
+    }
+
+    // Battery
+    if (wbdata.isBatteryConfigured) {
+      svg.append("path")
+        .datum(this.graphData)
+        .attr("stroke", this.batteryColor)
+        .attr("stroke-width", 1)
+        .attr("fill", "none")
+        .style("stroke-dasharray", ("3, 3"))
+        .attr("d", d3.line()
+          .x((d, i) => xScale(this.graphData[i].date))
+          .y(d => yScale(d.batterySoc))
+        );
+      svg.append("text")
+        .attr("x", (width - this.margin.right) / 2)
+        .attr("y", yScale(this.graphData[this.graphData.length - 1].batterySoc + 2))
+        .text("Speicher")
+        .attr("fill", this.batteryColor)
+        .style("background-color", "black")
+        .style("font-size", 10)
+        .attr("text-anchor", "middle");
+
+    }
     const socAxis = svg.append("g")
       .attr("class", "axis")
       .attr("transform", "translate(" + (width - 20) + ",0)")

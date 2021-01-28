@@ -32,7 +32,8 @@ class SmartHomeList {
         .selectAll("headers")
         .data(headers).enter()
         .append("th")
-        .attr("style", "color:white;text-align:center;")
+        .attr("style", (data, i) => (i == 0) ? "color:white;text-align:left;"
+                                              : "color:white;text-align:center;")
         .attr("class", "tablecell ")
         .text((data) => data)
         ;
@@ -46,12 +47,14 @@ class SmartHomeList {
         .attr("class", "tablecell py-1 px-1")
         .attr("onClick", (row, i) => "shDeviceClicked(" + i + ")")
         .attr("id", (row, i) => "shbutton-" + i)
-        .attr("style", "text-align:left; vertical-align:middle;")
-        .append("span")
+        .attr("style", "text-align:left; vertical-align:middle;");
+
+        cell.append("span")
+        .attr("class", (row) => row.isOn ? "fa fa-toggle-on text-green pr-2" : "fa fa-toggle-off text-red pr-2");
+        
+        cell.append("span")
         .text(row => row.name);
       
-        cell.append("span")
-        .attr("class", (row) => row.isOn ? "fa fa-toggle-on text-green px-2" : "fa fa-toggle-off text-red px-2");
         
     
     /*     if (row.isEnabled) { 
@@ -64,7 +67,7 @@ class SmartHomeList {
       rows.append("td")
         .attr("class", "tablecell py-1 px-1")
         .attr("style", "vertical-align: middle;")
-        .text(row => formatWatt(row.power) + " (" + row.energy + " kWh)",);
+        .text(row => formatWatt(row.power) + " (" + formatWattH (row.energy*1000) + ")");
 
       rows.append("td")
         .attr("class", "tablecell py-1 px-1")

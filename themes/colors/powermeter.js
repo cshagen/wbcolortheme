@@ -50,9 +50,9 @@ class PowerMeter {
     this.drawSourceArc(svg);
     this.drawUsageArc(svg);
 
-    this.addLabel(svg, 0, -this.height / 2 * 3 / 5, "middle", wbdata.sourceSummary[0]); // PV
-    this.addLabel(svg, 0, -this.height / 2 * 2 / 5, "middle", wbdata.sourceSummary[1]); // Netz
-    this.addLabel(svg, this.width / 2 - this.margin / 4, this.height / 2 - this.margin + 15, "end", wbdata.sourceSummary[2]); // Speicher out
+    this.addLabel(svg, 0, -this.height / 2 * 3 / 5, "middle", wbdata.sourceSummary.pv); // PV
+    this.addLabel(svg, 0, -this.height / 2 * 2 / 5, "middle", wbdata.sourceSummary.evuIn); // Netz
+    this.addLabel(svg, this.width / 2 - this.margin / 4, this.height / 2 - this.margin + 15, "end", wbdata.sourceSummary.batIn); // Speicher Out
     this.addLabel(svg, 0, -this.height / 2 * 2 / 5, "middle", wbdata.usageSummary[0]);  // Export
     this.addLabel(svg, 0, this.height / 2 * 1 / 5, "middle", wbdata.usageSummary[1]); // Laden
     this.addLabel(svg, 0, this.height / 2 * 3 / 5, "middle", wbdata.usageSummary[2]); // Geräte
@@ -113,7 +113,7 @@ class PowerMeter {
 
     // Add the chart to the svg
     svg.selectAll("sources")
-      .data(pieGenerator(wbdata.sourceSummary)).enter()
+      .data(pieGenerator(Object.values (wbdata.sourceSummary))).enter()
       .append("path")
       .attr("d", arc)
       .attr("fill", (d) => d.data.color);

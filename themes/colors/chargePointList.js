@@ -56,7 +56,7 @@ class ChargePointList {
     rows.selectAll("cells")
       .data(row => [
         formatWatt(row.power) + " " + this.phaseSymbols[row.phasesInUse] + " " + row.targetCurrent + " A",
-        row.energy + " kWh / " + Math.round(row.energy / row.energyPer100km * 1000) / 10 + " km"
+        formatWattH(row.energy*1000) + " / " + Math.round(row.energy / row.energyPer100km * 1000) / 10 + " km"
         
       ]).enter()
       .append("td")
@@ -86,9 +86,17 @@ class ChargePointList {
       .attr("style", "vertical-align:middle; text-align:left")
       .attr("onClick", (row, i) => ("lpButtonClicked(" + i + ")"));
     
+      if (row.isEnabled) { 
+        cell.append("span")
+        .attr("class", "fa fa-toggle-on text-green px-0")
+       } else {
+        cell.append("span")
+         .attr("class", "fa fa-toggle-off text-red px-0")
+      }
+
       cell
       .append("span").text(row.name)
-      .attr("class", "pr-2");
+      .attr("class", "px-2");
     
     if (row.isPluggedIn) {
       const span = 
@@ -107,13 +115,7 @@ class ChargePointList {
         .attr("fa fa-xs fa-moon");
     }
 
-    if (row.isEnabled) { 
-      cell.append("span")
-      .attr("class", "fa fa-toggle-on text-green px-2")
-     } else {
-      cell.append("span")
-       .attr("class", "fa fa-toggle-off text-red px-2")
-    }
+    
     return cell.node();
   }
 
