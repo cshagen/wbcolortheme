@@ -56,14 +56,12 @@ class PowerGraph {
 
       if (topic === "openWB/graph/lastlivevalues") {
         const values = this.extractValues(payload.toString());
-        console.log ("graph update [" + topic + "] - " + values.date);
         this.graphRefreshCounter++;
         this.graphData.push(values);
         
         this.updateGraph();
 
         if (this.graphRefreshCounter > 60) {
-          console.log ("--------------------- Reloading Graph");
           this.initialized = false;
           this.initialGraphData = [];
           subscribeMqttGraphSegments();
@@ -75,12 +73,10 @@ class PowerGraph {
         // init message
         const serialNo = t.substring(13, t.length - 13);
         var bulkdata = payload.toString().split("\n");
-        console.log ("graph update [" + topic + "] - " + bulkdata[0]);
         if (bulkdata.length <= 1) {
           bulkdata = [];
         }
         if (serialNo != "") {
-          console.log (serialNo);
           if (typeof (this.initialGraphData[+serialNo - 1]) === 'undefined') {
             this.initialGraphData[+serialNo - 1] = bulkdata;
             this.initCounter++;
