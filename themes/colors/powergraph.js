@@ -20,6 +20,7 @@ class PowerGraph {
     var style = getComputedStyle(document.body);
     this.colors[18] = style.getPropertyValue('--color-house');
     this.colors[19] = style.getPropertyValue('--color-battery');
+    this.colors[20] = style.getPropertyValue('--color-pv');
     this.gridColors[0] = style.getPropertyValue('--color-battery');
     this.gridColors[1] = style.getPropertyValue('--color-pv');
     this.gridColors[2] = style.getPropertyValue('--color-export');
@@ -55,13 +56,16 @@ class PowerGraph {
 
       if (topic === "openWB/graph/lastlivevalues") {
         const values = this.extractValues(payload.toString());
+        console.log ("graph update [" + topic + "] - " + values.date);
         this.graphRefreshCounter++;
         this.graphData.push(values);
+        
         this.updateGraph();
 
-        if (this.graphData > 60) {
+        if (this.graphRefreshCounter > 60) {
+          console.log ("--------------------- Reloading Graph");
           this.initialized = false;
-          this.initialGraphData = true;
+          this.initialGraphData = [];
           subscribeMqttGraphSegments();
         }
       }
@@ -71,10 +75,12 @@ class PowerGraph {
         // init message
         const serialNo = t.substring(13, t.length - 13);
         var bulkdata = payload.toString().split("\n");
+        console.log ("graph update [" + topic + "] - " + bulkdata[0]);
         if (bulkdata.length <= 1) {
           bulkdata = [];
         }
         if (serialNo != "") {
+          console.log (serialNo);
           if (typeof (this.initialGraphData[+serialNo - 1]) === 'undefined') {
             this.initialGraphData[+serialNo - 1] = bulkdata;
             this.initCounter++;
@@ -89,9 +95,9 @@ class PowerGraph {
             });
           });
 
-          this.graphData = this.graphData.sort((a, b) =>
-            a.date > b.date ? 1 : -1
-          );
+         /*  this.graphData = this.graphData.sort((a, b) =>
+            a.date > b.date ? 1 : -1 
+          );*/
           this.updateGraph();
           unsubscribeMqttGraphSegments();
         }
@@ -103,6 +109,7 @@ class PowerGraph {
     const elements = payload.split(",");
     var values = {};
     values.date = new Date(d3.timeParse("%H:%M:%S")(elements[0]));
+    // evu
     if (+elements[1] > 0) {
       values.gridPull = +elements[1];
       values.gridPush = 0;
@@ -110,28 +117,38 @@ class PowerGraph {
       values.gridPull = 0;
       values.gridPush = -elements[1];
     }
-    // values.chargePower = +elements[2];
-    values.solarPower = +elements[3];
+    // pv
+    if (+elements[3] >= 0) {
+      values.solarPower = +elements[3];
+      values.inverter = 0;
+    } else {
+      values.solarPower = 0;
+      values.inverter = -elements[3]
+    }
+    // calculated values
     values.housePower = +elements[11];
-    // values.boilerPower = +elements[21];
-    values.soc1 = +elements[9];
-    values.soc2 = +elements[10];
     values.selfUsage = values.solarPower - values.gridPush;
     if (values.selfUsage < 0) {
       values.selfUsage = 0;
     }
+    // charge points
     var i;
-
     values.lp0 = +elements[4];
     values.lp1 = +elements[5];
     for (i = 2; i < 9; i++) {
       values["lp" + i] = +elements[11 + i];
     }
+    values.soc1 = +elements[9];
+    values.soc2 = +elements[10];
+    
+    // smart home
     for (i = 0; i < 8; i++) {
       values["sh" + i] = +elements[20 + i];
     }
+    //consumers
     values.co0 = +elements[12];
     values.co1 = +elements[13];
+    //battery
     if (+elements[7] > 0) {
       values.batIn = +elements[7];
       values.batOut = 0;
@@ -143,6 +160,7 @@ class PowerGraph {
       values.batOut = 0;
     };
     values.batterySoc = +elements[8];
+    
     return values;
   }
 
@@ -223,13 +241,13 @@ class PowerGraph {
     const extent = d3.extent(this.graphData, (d) =>
     (d.housePower + d.lp0 + d.lp1 + d.lp2 + d.lp3 + d.lp4
       + d.lp5 + d.lp6 + d.lp7 + d.sh0 + d.sh1 + d.sh2 + d.sh3 + d.sh4
-      + d.sh5 + d.sh6 + d.sh7 + d.co0 + d.co1)
+      + d.sh5 + d.sh6 + d.sh7 + d.co0 + d.co1 + d.batIn + d.inverter)
     );
     yScale.domain([0, (extent[1])]);
     const keys = ["lp0", "lp1", "lp2", "lp3", "lp4",
       "lp5", "lp6", "lp7",
       "sh0", "sh1", "sh2", "sh3", "sh4",
-      "sh5", "sh6", "sh7", "co0", "co1", "housePower", "batIn"];
+      "sh5", "sh6", "sh7", "co0", "co1", "housePower", "batIn", "inverter"];
 
     const stackGen = d3.stack().keys(keys);
     const stackedSeries = stackGen(this.graphData);

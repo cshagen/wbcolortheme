@@ -10,7 +10,7 @@ class ChargePointList {
   constructor() {
     this.chargepoints = [];
     this.phaseSymbols = ['/', '\u2460', '\u2461', '\u2462']
-    this.headers = ["Ladepunkt", "Ladeparameter", "geladen", "Soc"];
+    this.headers = ["Ladepunkt", "Ladeparameter", "geladen", "Ladestand"];
   };
 
   // initialize after document is created
@@ -64,10 +64,7 @@ class ChargePointList {
       .attr("style", "vertical-align:middle;")
       .text(data => data);
     rows.append((row, i) => this.cpSocButtonCell(row, i));
-   // rows.append ((row,i) => this.chargePointMenuButton (row, i));
     
-   
-
     if (wbdata.isPriceChartEnabled) {
       this.footer.append ('p')
       .attr ("class", "pt-3 pb-0 m-0")
@@ -138,23 +135,6 @@ class ChargePointList {
   }
 
 
- /*  chargePointMenuButton (row, index) {
-    const cell = d3.create ("td")
-    .attr("class", "tablecell px-1 py-1")
-    .style("text-align", "center")
-    .style("vertical-align", "middle");
-    const button = cell
-      .append("button")
-      .attr("class", "btn btn-outline-info px-2 pt-0 mt-0 pb-1")
-      .attr ("style", "text-align: center; vertical-align: middle; color:white;")
-      .attr("onClick", (row, i) => ("cpButtonClicked(" + i + ")"))
-    button.append("i")
-        .attr("class", "small reloadLpSoc fas fa-bars")
-        .attr("id", "cpItem-" + index)
-        ;
-    return cell.node();
-  } */
-  
 }
 function lpButtonClicked(i) {
   if (wbdata.chargePoint[i].isEnabled) {

@@ -17,7 +17,7 @@ class YieldMeter {
 		this.width = 500;
 		this.height = 500;
 		this.margin = {
-			top: 25, bottom: 30, left: 15, right: 0
+			top: 25, bottom: 30, left: 20, right: 0
 		};
 		this.labelfontsize = 16;
 	}
