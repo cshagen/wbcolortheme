@@ -9,7 +9,12 @@ class PowerGraph {
     this.initialized = false;
     this.colors = [];
     this.gridColors = [];
-    this.axiscolor = "white";
+    this.bgcolor="";
+    this.axiscolor = "";
+    this.chargeColor="";
+    this.lp1color="";
+    this.lp2color="";
+    this.batteryColor="";
     this.graphRefreshCounter = 0;
     this.width = 500;
     this.height = 500;
@@ -274,6 +279,7 @@ class PowerGraph {
   }
 
   drawXAxis(svg, width, height) {
+    const fontsize=12;
     const xScale = d3.scaleTime().range([0, width - this.margin.right]);
     xScale.domain(d3.extent(this.graphData, (d) => d.date));
 
@@ -288,13 +294,19 @@ class PowerGraph {
     xAxis.attr("transform", "translate(0," + (height / 2 - 6) + ")");
     xAxis.selectAll(".tick")
       .attr("color", this.axiscolor)
-      .attr("font-size", 12)
+      .attr("font-size", fontsize)
     xAxis.selectAll(".tick line").attr("stroke", this.bgcolor);
     xAxis.select(".domain")
       .attr("stroke", this.bgcolor)
       ;
-
+    svg.append("text")
+      .attr("x", - this.margin.left)
+      .attr("y", height/2 +5)
+      .attr("fill", this.axiscolor)
+      .attr("font-size", fontsize)
+      .text("kW")
   }
+
   drawSoc(svg, width, height) {
     const xScale = d3.scaleTime().range([0, width - this.margin.right]);
     const yScale = d3.scaleLinear().range([height - 10, 0]);

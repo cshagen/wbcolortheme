@@ -20,6 +20,7 @@ class YieldMeter {
 			top: 25, bottom: 30, left: 20, right: 0
 		};
 		this.labelfontsize = 16;
+		this.axisFontSize = 12;
 	}
 
 	// to be called when the document is loaded
@@ -99,11 +100,18 @@ class YieldMeter {
 			.attr("text-anchor", "end")
 			.text("energy");
 
-		yAxis.selectAll(".tick").attr("font-size", 12);
+		yAxis.selectAll(".tick").attr("font-size", this.axisFontSize);
 		yAxis.selectAll(".tick line").attr("stroke", this.bgColor);
 		yAxis.select(".domain")
 			.attr("stroke", this.bgcolor);
 
+		svg.append("text")
+			.attr("x",-this.margin.left)
+			.attr("y", -15)
+			.style("fill", this.axisColor)
+			.attr("font-size", this.axisFontSize)
+			.text("kWh")
+			;
 		const labels = svg.selectAll(".label")
 			.data(this.plotdata)
 			.enter()

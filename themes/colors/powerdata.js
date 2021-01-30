@@ -144,7 +144,10 @@ class WbData {
 			case 'energy':
 				this.updateUsageSummary(2, "energy", this.shDevice.filter(dev => dev.configured).reduce((sum, consumer) => sum + consumer.energy, 0));
 				break;
-			
+			case 'showInGraph':
+				this.updateUsageDetails();
+				yieldMeter.update();
+				break;
 			default:
 				break;
 		}
@@ -218,7 +221,7 @@ class WbData {
 	updateUsageDetails() {
 		this.usageDetails = [this.usageSummary[0],
 		this.usageSummary[1]]
-			.concat(this.shDevice.filter(row => (row.configured)))
+			.concat(this.shDevice.filter(row => (row.configured && row.showInGraph)))
 			.concat(this.consumer.filter(row => (row.configured)))
 			.concat([this.usageSummary[3], this.usageSummary[4]]);
 	}
@@ -250,12 +253,14 @@ class ChargePoint {
 };
 
 class SHDevice {
-	constructor(index, name = "", power = 0, dailyYield = 0, configured = false) {
+	constructor(index, name = "", power = 0, dailyYield = 0, configured = false, color = "") {
+		this.id = index;
 		this.name = name;
 		this.power = power;
 		this.energy = dailyYield;
 		this.configured = configured;
-		//	this.color = d3.interpolateBlues (index / 10 + 0.3);
+		this.showInGraph = true;
+		this.color =color;
 	}
 };
 
