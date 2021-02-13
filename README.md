@@ -9,7 +9,7 @@ Kopiere das "colors"-Verzeichnis mit allen Files in das "themes"-Verzeichnis der
 ## Release Notes:
 Dies ist eine Testversion des Themes
 
-Derzeit werden noch nicht alle Features der Standard-Themes angeboten, teiweise mangels Test-Möglichkeiten des Entwicklers (z.B. awattar-Features).
+Derzeit werden noch nicht alle Features der Standard-Themes angeboten, teiweise mangels Test-Möglichkeiten des Entwicklers.
 
 Grundlegende EVU- und PV-Daten, Ladepunkte, Verbraucher, Smarthome-2.0 werden angezeigt und sind teilweise auch manipulierbar.
 
