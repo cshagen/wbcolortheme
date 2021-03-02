@@ -18,4 +18,3 @@ Grundlegende EVU- und PV-Daten, Ladepunkte, Verbraucher, Smarthome-2.0 werden an
 Das Theme funktioniert derzeit nur, wenn die openWB Internet-Zugriff hat, da eine Library (d3.js) übers Netz geladen wird. 
 
 ## Feedback ist willkommen (hier oder übers openWB-Forum)
-[
