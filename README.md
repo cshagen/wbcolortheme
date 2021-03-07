@@ -3,6 +3,8 @@ Ein Theme für die OpenWallbox (www.openwallbox.de)
 
 Zum Testen.
 
+![Picture of Theme](themes/colors/preview.png)
+
 ## Verwendung:
 Kopiere das "colors"-Verzeichnis mit allen Files in das "themes"-Verzeichnis der openWB (/var/www/html/openWB/web/themes).
 
