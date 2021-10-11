@@ -1,5 +1,5 @@
 # wbcolortheme
-Ein Theme für die OpenWallbox (www.openwallbox.de)
+Ein Theme für die OpenWallbox (www.openwb.de)
 
 Zum Testen.
 
